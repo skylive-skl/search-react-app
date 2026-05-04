@@ -10,6 +10,7 @@ interface State {
   pokemons: Pokemon[];
   isLoading: boolean;
   error: string | null;
+  lastSearchedTerm: string | null;
 }
 
 class App extends Component<{}, State> {
@@ -19,6 +20,7 @@ class App extends Component<{}, State> {
       pokemons: [],
       isLoading: false,
       error: null,
+      lastSearchedTerm: null,
     };
   }
 
@@ -28,7 +30,11 @@ class App extends Component<{}, State> {
   }
 
   handleSearch = async (searchTerm: string) => {
-    this.setState({ isLoading: true, error: null });
+    if (this.state.lastSearchedTerm === searchTerm && !this.state.error) {
+      return;
+    }
+
+    this.setState({ isLoading: true, error: null, lastSearchedTerm: searchTerm });
     try {
       const pokemons = await fetchPokemons(searchTerm);
       this.setState({ pokemons, isLoading: false });
