@@ -1,13 +1,17 @@
 import { Component, type ChangeEvent, type KeyboardEvent } from 'react';
 
+interface Props {
+  onSearch: (searchTerm: string) => void;
+}
+
 interface State {
   searchTerm: string;
 }
 
-class Search extends Component<{}, State> {
+class Search extends Component<Props, State> {
   private readonly STORAGE_KEY = 'pokemonSearchTerm';
 
-  constructor(props: {}) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       searchTerm: '',
@@ -34,6 +38,8 @@ class Search extends Component<{}, State> {
     if (trimmedTerm !== savedTerm) {
       localStorage.setItem(this.STORAGE_KEY, trimmedTerm);
     }
+
+    this.props.onSearch(trimmedTerm);
   };
 
   handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -50,7 +56,7 @@ class Search extends Component<{}, State> {
           value={this.state.searchTerm}
           onChange={this.handleInputChange}
           onKeyDown={this.handleKeyDown}
-          placeholder="Search Pokemon..." 
+          placeholder="Search Pokemon by exact name..." 
           className="flex-1 border border-slate-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-slate-500"
         />
         <button 
