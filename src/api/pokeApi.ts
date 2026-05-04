@@ -10,8 +10,13 @@ export const fetchPokemons = async (searchTerm: string = ''): Promise<Pokemon[]>
     try {
       const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${searchTerm.toLowerCase()}`);
       if (!response.ok) {
-        if (response.status === 404) return [];
-        throw new Error('Network error');
+        if (response.status === 404) {
+          throw new Error(`Pokemon "${searchTerm}" not found. Please check your spelling.`);
+        }
+        if (response.status >= 500) {
+          throw new Error('Server error. Please try again later.');
+        }
+        throw new Error(`API error: ${response.status}`);
       }
       const data = await response.json();
       return [{
@@ -21,25 +26,40 @@ export const fetchPokemons = async (searchTerm: string = ''): Promise<Pokemon[]>
         description: `Height: ${data.height}, Weight: ${data.weight}`
       }];
     } catch (error) {
-      console.error(error);
-      return [];
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error('An unexpected error occurred while fetching data.');
     }
   } else {
-    const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=20');
-    if (!response.ok) throw new Error('Network error');
-    const data = await response.json();
-    
-    const detailedPromises = data.results.map(async (item: { name: string, url: string }) => {
-      const res = await fetch(item.url);
-      const details = await res.json();
-      return {
-        id: details.id,
-        name: details.name,
-        image: details.sprites.front_default || '',
-        description: `Height: ${details.height}, Weight: ${details.weight}`
-      };
-    });
-    
-    return Promise.all(detailedPromises);
+    try {
+      const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=20');
+      if (!response.ok) {
+        if (response.status >= 500) {
+          throw new Error('Server error. Please try again later.');
+        }
+        throw new Error(`API error: ${response.status}`);
+      }
+      const data = await response.json();
+      
+      const detailedPromises = data.results.map(async (item: { name: string, url: string }) => {
+        const res = await fetch(item.url);
+        if (!res.ok) throw new Error(`Failed to fetch details for ${item.name}`);
+        const details = await res.json();
+        return {
+          id: details.id,
+          name: details.name,
+          image: details.sprites.front_default || '',
+          description: `Height: ${details.height}, Weight: ${details.weight}`
+        };
+      });
+      
+      return Promise.all(detailedPromises);
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error('An unexpected error occurred while fetching data.');
+    }
   }
 };
