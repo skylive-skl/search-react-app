@@ -11,7 +11,7 @@ describe('App component integration', () => {
     render(<App />);
     
     // Should show loading spinner initially
-    expect(screen.getByRole('status', { hidden: true }) || document.querySelector('.animate-spin')).toBeInTheDocument();
+    expect(document.querySelector('.animate-spin')).toBeInTheDocument();
     
     // Wait for the mock API call to resolve and display the results
     await waitFor(() => {
