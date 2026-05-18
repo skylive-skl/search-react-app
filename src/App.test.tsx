@@ -29,7 +29,7 @@ describe('App component integration', () => {
   });
 
   it('fetches specific pokemon when search term exists in localStorage', async () => {
-    localStorage.setItem('pokemonSearchTerm', 'pikachu');
+    localStorage.setItem('pokemonSearchTerm', JSON.stringify('pikachu'));
     renderApp();
 
     await waitFor(() => {

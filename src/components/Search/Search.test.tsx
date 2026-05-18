@@ -1,23 +1,30 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { useState } from 'react';
 import Search from './Search';
 
 describe('Search component', () => {
   const mockOnSearch = vi.fn();
-  const mockOnSearchTermChange = vi.fn();
-  const setup = (searchTerm = '') =>
-    render(
+  const ControlledSearch = ({ initialTerm = '' }: { initialTerm?: string }) => {
+    const [searchTerm, setSearchTerm] = useState(initialTerm);
+
+    return (
       <Search
         searchTerm={searchTerm}
-        onSearchTermChange={mockOnSearchTermChange}
+        onSearchTermChange={setSearchTerm}
         onSearch={mockOnSearch}
       />
+    );
+  };
+
+  const setup = (searchTerm = '') =>
+    render(
+      <ControlledSearch initialTerm={searchTerm} />
     );
 
   beforeEach(() => {
     localStorage.clear();
     mockOnSearch.mockClear();
-    mockOnSearchTermChange.mockClear();
   });
 
   it('renders correctly', () => {
@@ -42,7 +49,7 @@ describe('Search component', () => {
     const input = screen.getByPlaceholderText(/search pokemon by exact name/i);
     await user.type(input, 'charizard');
 
-    expect(mockOnSearchTermChange).toHaveBeenLastCalledWith('charizard');
+    expect(input).toHaveValue('charizard');
   });
 
   it('calls onSearch on search button click', async () => {
