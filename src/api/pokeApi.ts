@@ -10,16 +10,26 @@ export interface PokemonSearchResult {
   totalCount: number;
 }
 
-const mapPokemonFromApi = (data: { id: number; name: string; sprites: { front_default: string | null }; height: number; weight: number }): Pokemon => ({
+const mapPokemonFromApi = (data: {
+  id: number;
+  name: string;
+  sprites: { front_default: string | null };
+  height: number;
+  weight: number;
+}): Pokemon => ({
   id: data.id,
   name: data.name,
   image: data.sprites.front_default || '',
   description: `Height: ${data.height}, Weight: ${data.weight}`,
 });
 
-export const fetchPokemonDetails = async (idOrName: string): Promise<Pokemon> => {
+export const fetchPokemonDetails = async (
+  idOrName: string
+): Promise<Pokemon> => {
   try {
-    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${idOrName.toLowerCase()}`);
+    const response = await fetch(
+      `https://pokeapi.co/api/v2/pokemon/${idOrName.toLowerCase()}`
+    );
     if (!response.ok) {
       if (response.status === 404) {
         throw new Error(`Pokemon "${idOrName}" not found.`);
@@ -47,10 +57,14 @@ export const fetchPokemons = async (
 ): Promise<PokemonSearchResult> => {
   if (searchTerm) {
     try {
-      const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${searchTerm.toLowerCase()}`);
+      const response = await fetch(
+        `https://pokeapi.co/api/v2/pokemon/${searchTerm.toLowerCase()}`
+      );
       if (!response.ok) {
         if (response.status === 404) {
-          throw new Error(`Pokemon "${searchTerm}" not found. Please check your spelling.`);
+          throw new Error(
+            `Pokemon "${searchTerm}" not found. Please check your spelling.`
+          );
         }
         if (response.status >= 500) {
           throw new Error('Server error. Please try again later.');
@@ -72,7 +86,9 @@ export const fetchPokemons = async (
     try {
       const safePage = Math.max(1, page);
       const offset = (safePage - 1) * limit;
-      const response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`);
+      const response = await fetch(
+        `https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`
+      );
       if (!response.ok) {
         if (response.status >= 500) {
           throw new Error('Server error. Please try again later.');
@@ -80,13 +96,16 @@ export const fetchPokemons = async (
         throw new Error(`API error: ${response.status}`);
       }
       const data = await response.json();
-      
-      const detailedPromises = data.results.map(async (item: { name: string, url: string }) => {
-        const res = await fetch(item.url);
-        if (!res.ok) throw new Error(`Failed to fetch details for ${item.name}`);
-        const details = await res.json();
-        return mapPokemonFromApi(details);
-      });
+
+      const detailedPromises = data.results.map(
+        async (item: { name: string; url: string }) => {
+          const res = await fetch(item.url);
+          if (!res.ok)
+            throw new Error(`Failed to fetch details for ${item.name}`);
+          const details = await res.json();
+          return mapPokemonFromApi(details);
+        }
+      );
 
       const pokemons = await Promise.all(detailedPromises);
       return {

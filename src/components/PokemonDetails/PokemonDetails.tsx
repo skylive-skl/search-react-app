@@ -43,7 +43,9 @@ const PokemonDetails: React.FC = () => {
   return (
     <aside className="w-full lg:w-90 xl:w-105 bg-white border border-slate-100 rounded-lg shadow-sm p-4">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-slate-800">Pokemon Details</h3>
+        <h3 className="text-lg font-semibold text-slate-800">
+          Pokemon Details
+        </h3>
         <button
           type="button"
           onClick={handleClose}
@@ -56,18 +58,26 @@ const PokemonDetails: React.FC = () => {
       {isLoading ? (
         <Spinner />
       ) : error ? (
-        <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-md">{error}</div>
+        <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-md">
+          {error}
+        </div>
       ) : pokemon ? (
         <div className="space-y-4">
           <div className="w-36 h-36 mx-auto bg-slate-50 rounded-full flex items-center justify-center overflow-hidden">
             {pokemon.image ? (
-              <img src={pokemon.image} alt={pokemon.name} className="w-full h-full object-contain" />
+              <img
+                src={pokemon.image}
+                alt={pokemon.name}
+                className="w-full h-full object-contain"
+              />
             ) : (
               <span className="text-slate-400 text-sm">No Image</span>
             )}
           </div>
           <div className="text-center">
-            <h4 className="text-2xl font-bold capitalize text-slate-800">{pokemon.name}</h4>
+            <h4 className="text-2xl font-bold capitalize text-slate-800">
+              {pokemon.name}
+            </h4>
             <p className="text-slate-600 mt-2">{pokemon.description}</p>
           </div>
         </div>

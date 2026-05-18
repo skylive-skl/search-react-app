@@ -4,7 +4,11 @@ interface Props {
   onPageChange: (page: number) => void;
 }
 
-const Pagination: React.FC<Props> = ({ currentPage, totalPages, onPageChange }) => {
+const Pagination: React.FC<Props> = ({
+  currentPage,
+  totalPages,
+  onPageChange,
+}) => {
   const getVisiblePages = (): number[] => {
     if (totalPages <= 5) {
       return Array.from({ length: totalPages }, (_, index) => index + 1);
@@ -15,16 +19,31 @@ const Pagination: React.FC<Props> = ({ currentPage, totalPages, onPageChange }) 
     }
 
     if (currentPage >= totalPages - 2) {
-      return [totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+      return [
+        totalPages - 4,
+        totalPages - 3,
+        totalPages - 2,
+        totalPages - 1,
+        totalPages,
+      ];
     }
 
-    return [currentPage - 2, currentPage - 1, currentPage, currentPage + 1, currentPage + 2];
+    return [
+      currentPage - 2,
+      currentPage - 1,
+      currentPage,
+      currentPage + 1,
+      currentPage + 2,
+    ];
   };
 
   const pages = getVisiblePages();
 
   return (
-    <nav className="mt-6 flex items-center justify-center gap-2" aria-label="Pagination">
+    <nav
+      className="mt-6 flex items-center justify-center gap-2"
+      aria-label="Pagination"
+    >
       <button
         type="button"
         onClick={() => onPageChange(currentPage - 1)}

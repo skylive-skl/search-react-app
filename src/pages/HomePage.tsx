@@ -1,5 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Outlet, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import {
+  Outlet,
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from 'react-router-dom';
 import Search from '../components/Search/Search';
 import CardList from '../components/CardList/CardList';
 import Spinner from '../components/Spinner/Spinner';
@@ -11,7 +17,10 @@ const PAGE_SIZE = 20;
 
 const HomePage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [storedSearchTerm, setStoredSearchTerm] = useLocalStorage<string>('pokemonSearchTerm', '');
+  const [storedSearchTerm, setStoredSearchTerm] = useLocalStorage<string>(
+    'pokemonSearchTerm',
+    ''
+  );
   const [searchTerm, setSearchTerm] = useState(storedSearchTerm);
   const [appliedSearchTerm, setAppliedSearchTerm] = useState(storedSearchTerm);
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
@@ -27,7 +36,8 @@ const HomePage: React.FC = () => {
 
   const pageParam = searchParams.get('page');
   const parsedPage = Number(pageParam);
-  const currentPage = Number.isInteger(parsedPage) && parsedPage > 0 ? parsedPage : 1;
+  const currentPage =
+    Number.isInteger(parsedPage) && parsedPage > 0 ? parsedPage : 1;
 
   const totalPages = useMemo(() => {
     const pages = Math.ceil(totalCount / PAGE_SIZE);
@@ -48,7 +58,11 @@ const HomePage: React.FC = () => {
       setError(null);
 
       try {
-        const result = await fetchPokemons(appliedSearchTerm.trim(), currentPage, PAGE_SIZE);
+        const result = await fetchPokemons(
+          appliedSearchTerm.trim(),
+          currentPage,
+          PAGE_SIZE
+        );
         setPokemons(result.pokemons);
         setTotalCount(result.totalCount);
       } catch (err) {
@@ -98,7 +112,10 @@ const HomePage: React.FC = () => {
   };
 
   const handleSelectPokemon = (pokemonId: number) => {
-    navigate({ pathname: `/details/${pokemonId}`, search: `?${searchParams.toString()}` });
+    navigate({
+      pathname: `/details/${pokemonId}`,
+      search: `?${searchParams.toString()}`,
+    });
   };
 
   const handleMainPanelClick = () => {
