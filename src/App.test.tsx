@@ -1,6 +1,14 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { BrowserRouter } from 'react-router-dom';
 import App from './App';
+
+const renderApp = () =>
+  render(
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  );
 
 describe('App component integration', () => {
   beforeEach(() => {
@@ -8,7 +16,7 @@ describe('App component integration', () => {
   });
 
   it('fetches default list on initial mount', async () => {
-    render(<App />);
+    renderApp();
     
     // Should show loading spinner initially
     expect(document.querySelector('.animate-spin')).toBeInTheDocument();
@@ -22,7 +30,7 @@ describe('App component integration', () => {
 
   it('fetches specific pokemon when search term exists in localStorage', async () => {
     localStorage.setItem('pokemonSearchTerm', 'pikachu');
-    render(<App />);
+    renderApp();
     
     await waitFor(() => {
       expect(screen.getByText('pikachu')).toBeInTheDocument();
@@ -31,7 +39,7 @@ describe('App component integration', () => {
 
   it('searches for a new pokemon on form submission', async () => {
     const user = userEvent.setup();
-    render(<App />);
+    renderApp();
     
     // Wait for initial load
     await waitFor(() => {
@@ -56,7 +64,7 @@ describe('App component integration', () => {
 
   it('displays an error message when API call fails (404)', async () => {
     const user = userEvent.setup();
-    render(<App />);
+    renderApp();
     
     // Wait for initial load
     await waitFor(() => {
@@ -78,7 +86,7 @@ describe('App component integration', () => {
 
   it('displays an error message when API call fails (500)', async () => {
     const user = userEvent.setup();
-    render(<App />);
+    renderApp();
     
     await waitFor(() => {
       expect(screen.getByText('bulbasaur')).toBeInTheDocument();

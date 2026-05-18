@@ -2,11 +2,19 @@ import type { Pokemon } from '../../api/pokeApi';
 
 interface Props {
   pokemon: Pokemon;
+  onClick?: () => void;
+  isSelected?: boolean;
 }
 
-const Card: React.FC<Props> = ({ pokemon }) => {
+const Card: React.FC<Props> = ({ pokemon, onClick, isSelected = false }) => {
   return (
-    <div className="border border-slate-200 rounded-lg p-4 flex flex-col items-center justify-center bg-white shadow-sm hover:shadow-md transition-all duration-200 group">
+    <button
+      type="button"
+      onClick={onClick}
+      className={`border rounded-lg p-4 flex flex-col items-center justify-center bg-white shadow-sm hover:shadow-md transition-all duration-200 group w-full text-left ${
+        isSelected ? 'border-slate-800 ring-2 ring-slate-300' : 'border-slate-200'
+      }`}
+    >
       <div className="w-24 h-24 mb-4 bg-slate-50 rounded-full flex items-center justify-center overflow-hidden group-hover:scale-110 transition-transform">
         {pokemon.image ? (
           <img 
@@ -25,7 +33,7 @@ const Card: React.FC<Props> = ({ pokemon }) => {
       <p className="text-sm text-slate-500 text-center">
         {pokemon.description}
       </p>
-    </div>
+    </button>
   );
 };
 

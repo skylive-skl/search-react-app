@@ -4,56 +4,60 @@ import Search from './Search';
 
 describe('Search component', () => {
   const mockOnSearch = vi.fn();
+  const mockOnSearchTermChange = vi.fn();
+  const setup = (searchTerm = '') =>
+    render(
+      <Search
+        searchTerm={searchTerm}
+        onSearchTermChange={mockOnSearchTermChange}
+        onSearch={mockOnSearch}
+      />
+    );
 
   beforeEach(() => {
     localStorage.clear();
     mockOnSearch.mockClear();
+    mockOnSearchTermChange.mockClear();
   });
 
   it('renders correctly', () => {
-    render(<Search onSearch={mockOnSearch} />);
+    setup();
     expect(screen.getByPlaceholderText(/search pokemon by exact name/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /search/i })).toBeInTheDocument();
   });
 
-  it('reads from localStorage on mount', () => {
-    localStorage.setItem('pokemonSearchTerm', 'pikachu');
-    render(<Search onSearch={mockOnSearch} />);
+  it('renders provided search term value', () => {
+    setup('pikachu');
     expect(screen.getByPlaceholderText(/search pokemon by exact name/i)).toHaveValue('pikachu');
   });
 
   it('updates input value on change', async () => {
     const user = userEvent.setup();
-    render(<Search onSearch={mockOnSearch} />);
+    setup();
     
     const input = screen.getByPlaceholderText(/search pokemon by exact name/i);
     await user.type(input, 'charizard');
     
-    expect(input).toHaveValue('charizard');
+    expect(mockOnSearchTermChange).toHaveBeenLastCalledWith('charizard');
   });
 
-  it('calls onSearch and saves to localStorage on search button click', async () => {
+  it('calls onSearch on search button click', async () => {
     const user = userEvent.setup();
-    render(<Search onSearch={mockOnSearch} />);
-    
-    const input = screen.getByPlaceholderText(/search pokemon by exact name/i);
-    await user.type(input, ' charizard '); // with spaces to test trim
+    setup();
     
     const button = screen.getByRole('button', { name: /search/i });
     await user.click(button);
     
-    expect(mockOnSearch).toHaveBeenCalledWith('charizard');
-    expect(localStorage.getItem('pokemonSearchTerm')).toBe('charizard');
+    expect(mockOnSearch).toHaveBeenCalledTimes(1);
   });
 
-  it('calls onSearch and saves to localStorage on Enter key press', async () => {
+  it('calls onSearch on Enter key press', async () => {
     const user = userEvent.setup();
-    render(<Search onSearch={mockOnSearch} />);
+    setup();
     
     const input = screen.getByPlaceholderText(/search pokemon by exact name/i);
     await user.type(input, 'mewtwo{enter}');
     
-    expect(mockOnSearch).toHaveBeenCalledWith('mewtwo');
-    expect(localStorage.getItem('pokemonSearchTerm')).toBe('mewtwo');
+    expect(mockOnSearch).toHaveBeenCalledTimes(1);
   });
 });
