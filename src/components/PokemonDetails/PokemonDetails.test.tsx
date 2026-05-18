@@ -33,7 +33,9 @@ describe('PokemonDetails component', () => {
     renderWithRouter('/pokemon/unknownpokemon?page=1');
 
     await waitFor(() => {
-      expect(screen.getByText('Pokemon "unknownpokemon" not found.')).toBeInTheDocument();
+      expect(
+        screen.getByText('Pokemon "unknownpokemon" not found.')
+      ).toBeInTheDocument();
     });
   });
 });

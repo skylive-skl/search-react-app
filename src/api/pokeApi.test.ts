@@ -30,12 +30,22 @@ describe('pokeApi helpers', () => {
   it('fetchPokemonDetails throws specific errors by status code', async () => {
     vi.stubGlobal(
       'fetch',
-      vi.fn().mockResolvedValueOnce({ ok: false, status: 404 }).mockResolvedValueOnce({ ok: false, status: 500 }).mockResolvedValueOnce({ ok: false, status: 418 })
+      vi
+        .fn()
+        .mockResolvedValueOnce({ ok: false, status: 404 })
+        .mockResolvedValueOnce({ ok: false, status: 500 })
+        .mockResolvedValueOnce({ ok: false, status: 418 })
     );
 
-    await expect(fetchPokemonDetails('missing')).rejects.toThrow('Pokemon "missing" not found.');
-    await expect(fetchPokemonDetails('broken')).rejects.toThrow('Server error. Please try again later.');
-    await expect(fetchPokemonDetails('teapot')).rejects.toThrow('API error: 418');
+    await expect(fetchPokemonDetails('missing')).rejects.toThrow(
+      'Pokemon "missing" not found.'
+    );
+    await expect(fetchPokemonDetails('broken')).rejects.toThrow(
+      'Server error. Please try again later.'
+    );
+    await expect(fetchPokemonDetails('teapot')).rejects.toThrow(
+      'API error: 418'
+    );
   });
 
   it('fetchPokemons by search term returns one mapped pokemon', async () => {
@@ -69,11 +79,19 @@ describe('pokeApi helpers', () => {
   it('fetchPokemons search throws specific errors', async () => {
     vi.stubGlobal(
       'fetch',
-      vi.fn().mockResolvedValueOnce({ ok: false, status: 404 }).mockResolvedValueOnce({ ok: false, status: 500 }).mockResolvedValueOnce({ ok: false, status: 400 })
+      vi
+        .fn()
+        .mockResolvedValueOnce({ ok: false, status: 404 })
+        .mockResolvedValueOnce({ ok: false, status: 500 })
+        .mockResolvedValueOnce({ ok: false, status: 400 })
     );
 
-    await expect(fetchPokemons('missing')).rejects.toThrow('Pokemon "missing" not found. Please check your spelling.');
-    await expect(fetchPokemons('oops')).rejects.toThrow('Server error. Please try again later.');
+    await expect(fetchPokemons('missing')).rejects.toThrow(
+      'Pokemon "missing" not found. Please check your spelling.'
+    );
+    await expect(fetchPokemons('oops')).rejects.toThrow(
+      'Server error. Please try again later.'
+    );
     await expect(fetchPokemons('bad')).rejects.toThrow('API error: 400');
   });
 
@@ -87,7 +105,10 @@ describe('pokeApi helpers', () => {
           json: vi.fn().mockResolvedValue({
             count: 0,
             results: [
-              { name: 'bulbasaur', url: 'https://pokeapi.co/api/v2/pokemon/1/' },
+              {
+                name: 'bulbasaur',
+                url: 'https://pokeapi.co/api/v2/pokemon/1/',
+              },
               { name: 'ivysaur', url: 'https://pokeapi.co/api/v2/pokemon/2/' },
             ],
           }),
@@ -131,13 +152,22 @@ describe('pokeApi helpers', () => {
           ok: true,
           json: vi.fn().mockResolvedValue({
             count: 1,
-            results: [{ name: 'bulbasaur', url: 'https://pokeapi.co/api/v2/pokemon/1/' }],
+            results: [
+              {
+                name: 'bulbasaur',
+                url: 'https://pokeapi.co/api/v2/pokemon/1/',
+              },
+            ],
           }),
         })
         .mockResolvedValueOnce({ ok: false })
     );
 
-    await expect(fetchPokemons('', 1, 20)).rejects.toThrow('Server error. Please try again later.');
-    await expect(fetchPokemons('', 1, 20)).rejects.toThrow('Failed to fetch details for bulbasaur');
+    await expect(fetchPokemons('', 1, 20)).rejects.toThrow(
+      'Server error. Please try again later.'
+    );
+    await expect(fetchPokemons('', 1, 20)).rejects.toThrow(
+      'Failed to fetch details for bulbasaur'
+    );
   });
 });
