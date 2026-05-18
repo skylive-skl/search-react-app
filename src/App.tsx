@@ -5,6 +5,7 @@ import CardList from './components/CardList/CardList';
 import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
 import Spinner from './components/Spinner/Spinner';
 import { fetchPokemons, type Pokemon } from './api/pokeApi';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 interface State {
   pokemons: Pokemon[];
